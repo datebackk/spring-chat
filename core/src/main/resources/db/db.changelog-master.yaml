@@ -1,0 +1,9 @@
+databaseChangeLog:
+#   First empty changeSet to allow update database from maven
+    - changeSet:
+        id: 9999999999999-1
+        author: datebackk (generated)
+        changes: []
+
+    - includeAll:
+        path: db/changelog/
