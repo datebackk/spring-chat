@@ -7,12 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
 
-@Entity
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity(name = "chat_message")
 public class ChatMessage {
    @Id
    private String id;

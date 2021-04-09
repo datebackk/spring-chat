@@ -45,6 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/users/signup").permitAll()//
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 // Disallow everything else..
+                .antMatchers("**").permitAll()
                 .anyRequest().authenticated();
 
         // If a user try to access a resource without having enough permissions
