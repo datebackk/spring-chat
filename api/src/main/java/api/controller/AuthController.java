@@ -3,71 +3,55 @@ package api.controller;
 
 import api.dto.JwtAuthenticationResponse;
 import api.dto.LoginUserDTO;
-import io.swagger.annotations.ApiParam;
-import model.model.Role;
-import model.model.User;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import api.dto.UserDTO;
+import api.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import api.dto.UserDataDTO;
-import api.dto.UserResponseDTO;
 import security.service.AuthService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final UserMapper userMapper;
+
 
     @PostMapping("/signin")
-    public String login(//
-                        @RequestParam String email, //
-                        @RequestParam String password) {
-        return authService.signin(email, password);
+    public ResponseEntity<?> login(@RequestBody LoginUserDTO user) {
+        String token = authService.signin(user.getEmail(), user.getPassword());
+        return new ResponseEntity<>(new JwtAuthenticationResponse(token), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> login(@ApiParam("Signin User") @RequestBody LoginUserDTO user) {
-        String token = authService.signin(user.getEmail(), user.getPassword());
-        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+    public ResponseEntity<?> signup(@RequestBody UserDTO user) {
+        String token = authService.signup(userMapper.toEntity(user));
+        return new ResponseEntity<>(new JwtAuthenticationResponse(token), HttpStatus.CREATED);
     }
 
-
-    @DeleteMapping(value = "/{email}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String delete(@PathVariable String email) {
-        authService.delete(email);
-        return email;
-    }
 
     @GetMapping(value = "/{email}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public UserResponseDTO search(@PathVariable String email) {
-        return modelMapper.map(authService.search(email), UserResponseDTO.class);
+    public ResponseEntity<?> search(@PathVariable String email) {
+        return new ResponseEntity<>(userMapper.toDTO(authService.search(email)), HttpStatus.OK);
     }
 
 
     @GetMapping(value = "/me")
     public ResponseEntity<?> whoami(HttpServletRequest req) {
-        return ResponseEntity.ok(modelMapper.map(authService.whoami(req), UserResponseDTO.class));
+        return new ResponseEntity<>(userMapper.toDTO(authService.whoami(req)), HttpStatus.OK);
     }
 
     @GetMapping("/refresh")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public String refresh(HttpServletRequest req) {
         return authService.refresh(req.getRemoteUser());
     }
 
 }
-

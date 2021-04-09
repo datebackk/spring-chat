@@ -6,8 +6,10 @@ import model.model.Role;
 import java.util.List;
 
 @Data
-public class UserResponseDTO {
+public class UserDTO {
     private Long id;
+    private String nickname;
     private String email;
-    List<Role> roles;
+    private String password;
+    private List<Role> roles;
 }

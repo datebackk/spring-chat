@@ -1,6 +1,7 @@
 package service.service;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.var;
 import model.model.ChatMessage;
 import model.model.MessageStatus;
@@ -14,9 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ChatMessageService {
-    @Autowired private ChatMessageRepository repository;
-    @Autowired private ChatRoomService chatRoomService;
+
+    private final ChatMessageRepository repository;
+    private final ChatRoomService chatRoomService;
 
     public ChatMessage save(ChatMessage chatMessage) {
         chatMessage.setStatus(MessageStatus.RECEIVED);

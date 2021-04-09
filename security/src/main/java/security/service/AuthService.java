@@ -1,6 +1,7 @@
 package security.service;
 
 
+import lombok.RequiredArgsConstructor;
 import model.model.User;
 import model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +18,17 @@ import security.jwt.JwtTokenProvider;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
+    private final AuthenticationManager authenticationManager;
 
     public String signin(String email, String password) {
         try {

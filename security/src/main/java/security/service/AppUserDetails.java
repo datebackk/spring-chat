@@ -1,5 +1,6 @@
 package security.service;
 
+import lombok.RequiredArgsConstructor;
 import model.model.Role;
 import model.model.User;
 import model.repository.UserRepository;
@@ -16,10 +17,10 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AppUserDetails implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
