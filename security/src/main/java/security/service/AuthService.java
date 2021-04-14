@@ -4,7 +4,6 @@ package security.service;
 import lombok.RequiredArgsConstructor;
 import model.model.User;
 import model.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,9 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import security.exception.CustomException;
 import security.jwt.JwtTokenProvider;
+import service.service.RoleService;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final RoleService roleService;
 
 
     private final AuthenticationManager authenticationManager;
@@ -42,6 +45,7 @@ public class AuthService {
     public String signup(User user) {
         if (!userRepository.existsByEmail(user.getEmail())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(user.getRoles().stream().map(p -> p = roleService.findById(p.getId()).get()).collect(Collectors.toList()));
             userRepository.save(user);
             return jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
         } else {

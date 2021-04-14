@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Getter
 @Setter
@@ -19,9 +20,9 @@ public class ChatRoom {
     @Column(name = "chat_id")
     private String chatId;
 
-    @Column(name = "sender_id")
-    private String senderId;
+    @ManyToOne
+    private User sender;
 
-    @Column(name = "recipient_id")
-    private String recipientId;
+    @ManyToOne
+    private User recipient;
 }

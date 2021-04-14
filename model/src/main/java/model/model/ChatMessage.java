@@ -3,8 +3,7 @@ package model.model;
 import lombok.*;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 
@@ -16,13 +15,18 @@ import java.util.Date;
 @Entity(name = "chat_message")
 public class ChatMessage {
    @Id
-   private String id;
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
+
+   @Column(name = "chat_id")
    private String chatId;
-   private String senderId;
-   private String recipientId;
-   private String senderName;
-   private String recipientName;
-   private String content;
-   private Date timestamp;
+
+   @Column(name = "sender_id")
+   private Long senderId;
+
+   @Column(name = "recipient_id")
+   private Long recipientId;
+
+   private String message;
    private MessageStatus status;
 }

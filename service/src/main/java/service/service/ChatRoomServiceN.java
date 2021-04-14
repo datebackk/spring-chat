@@ -1,9 +1,10 @@
 package service.service;
 
 import model.model.ChatRoom;
+import model.model.User;
 
 import java.util.List;
 
 public interface ChatRoomServiceN {
-    List<ChatRoom> findBySenderIdOrRecipientId(String id);
+    List<ChatRoom> findBySenderOrRecipient(User user);
 }
