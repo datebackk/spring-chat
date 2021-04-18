@@ -2,17 +2,12 @@ package model.model;
 
 import lombok.*;
 
-
 import javax.persistence.*;
-import java.util.Date;
 
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Entity(name = "chat_message")
+@Entity
+@Data
+@Table(name = "chat_message")
 public class ChatMessage {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +23,7 @@ public class ChatMessage {
    private Long recipientId;
 
    private String message;
+
+   @Enumerated(EnumType.ORDINAL)
    private MessageStatus status;
 }

@@ -1,13 +1,15 @@
 package api.controller;
 
+import api.dto.MessageDTO;
 import api.mapper.MessageMapper;
 import lombok.RequiredArgsConstructor;
 import model.model.ChatMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.*;
 import service.service.ChatMessageServiceN;
 
 import java.util.List;
@@ -17,10 +19,22 @@ import java.util.List;
 public class MessageController {
     private final ChatMessageServiceN chatMessageService;
     private final MessageMapper messageMapper;
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+    @MessageMapping("message/{to}")
+    public void sendWsMessage(@DestinationVariable String to, MessageDTO messageDTO) {
+        simpMessagingTemplate.convertAndSend("/user/messages/" + to, messageDTO);
+    }
 
     @GetMapping("/message/{chatId}")
     public ResponseEntity<?> getChatMessages(@PathVariable String chatId) {
         List<ChatMessage> chatMessages = chatMessageService.findByChatId(chatId);
         return new ResponseEntity<>(chatMessages, HttpStatus.OK);
+    }
+
+    @PostMapping("/message")
+    public ResponseEntity<?> sendMessage(@RequestBody MessageDTO message) {
+        chatMessageService.save(messageMapper.toEntity(message));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
