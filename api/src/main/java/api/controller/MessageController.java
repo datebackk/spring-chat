@@ -21,9 +21,9 @@ public class MessageController {
     private final MessageMapper messageMapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @MessageMapping("message/{to}")
+    @MessageMapping("/chat/{to}")
     public void sendWsMessage(@DestinationVariable String to, MessageDTO messageDTO) {
-        simpMessagingTemplate.convertAndSend("/user/messages/" + to, messageDTO);
+        simpMessagingTemplate.convertAndSend("/topic/messages/" + to, messageDTO);
     }
 
     @GetMapping("/message/{chatId}")
