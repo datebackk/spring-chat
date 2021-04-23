@@ -1,9 +1,11 @@
 package api.controller;
 
+import api.dto.CountedMessages;
 import api.dto.MessageDTO;
 import api.mapper.MessageMapper;
 import lombok.RequiredArgsConstructor;
 import model.model.ChatMessage;
+import model.model.MessageStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -30,6 +32,14 @@ public class MessageController {
     public ResponseEntity<?> getChatMessages(@PathVariable String chatId) {
         List<ChatMessage> chatMessages = chatMessageService.findByChatId(chatId);
         return new ResponseEntity<>(chatMessages, HttpStatus.OK);
+    }
+
+    @GetMapping("/new-messages/{chatId}")
+    public ResponseEntity<?> getNewMessages(@PathVariable String chatId) {
+        Long newMessages = chatMessageService.countChatMessageByChatIdAndStatus(chatId, MessageStatus.RECEIVED);
+        CountedMessages countedMessages = new CountedMessages();
+        countedMessages.setCountedMessages(newMessages);
+        return new ResponseEntity<>(countedMessages, HttpStatus.OK);
     }
 
     @PostMapping("/message")
