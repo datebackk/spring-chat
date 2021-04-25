@@ -12,20 +12,26 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-import service.service.ChatMessageServiceN;
+import service.service.ChatMessageService;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class MessageController {
-    private final ChatMessageServiceN chatMessageService;
+
+    private final ChatMessageService chatMessageService;
     private final MessageMapper messageMapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/chat/{to}")
     public void sendWsMessage(@DestinationVariable String to, MessageDTO messageDTO) {
         simpMessagingTemplate.convertAndSend("/topic/messages/" + to, messageDTO);
+    }
+
+    @MessageMapping("/message-status/{to}")
+    public void updateWsMessageStatus(@DestinationVariable String to, MessageDTO messageDTO) {
+        simpMessagingTemplate.convertAndSend("/topic/messages-status/" + to, messageDTO);
     }
 
     @GetMapping("/message/{chatId}")
@@ -36,7 +42,7 @@ public class MessageController {
 
     @GetMapping("/new-messages/{chatId}")
     public ResponseEntity<?> getNewMessages(@PathVariable String chatId) {
-        Long newMessages = chatMessageService.countChatMessageByChatIdAndStatus(chatId, MessageStatus.RECEIVED);
+        Long newMessages = chatMessageService.countChatMessageByChatIdAndStatus(chatId, MessageStatus.SENT);
         CountedMessages countedMessages = new CountedMessages();
         countedMessages.setCountedMessages(newMessages);
         return new ResponseEntity<>(countedMessages, HttpStatus.OK);
@@ -44,7 +50,15 @@ public class MessageController {
 
     @PostMapping("/message")
     public ResponseEntity<?> sendMessage(@RequestBody MessageDTO message) {
-        chatMessageService.save(messageMapper.toEntity(message));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        ChatMessage chatMessage = chatMessageService.saveAndFlushChatMessage(messageMapper.toEntity(message));
+        return new ResponseEntity<>(chatMessage, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/message")
+    public ResponseEntity<?> updateMessage(@RequestBody MessageDTO messageDTO) {
+        ChatMessage chatMessage = chatMessageService.findById(messageDTO.getId()).get();
+        messageMapper.merge(chatMessage, messageDTO);
+        MessageDTO messageDTO1 = messageMapper.toDTO(chatMessageService.saveAndFlushChatMessage(chatMessage));
+        return new ResponseEntity<>(messageDTO1, HttpStatus.OK);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import security.service.AuthService;
-import service.service.ChatRoomServiceN;
+import service.service.ChatRoomService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -16,14 +16,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
-    private final ChatRoomServiceN chatRoomServiceN;
+    private final ChatRoomService chatRoomService;
 
     private final ChatRoomMapper chatRoomMapper;
     private final AuthService authService;
 
     @GetMapping("/chats")
     public ResponseEntity<?> getChats(HttpServletRequest req) {
-        List<ChatRoom> chatRooms = chatRoomServiceN.findBySenderOrRecipient(authService.whoami(req));
+        List<ChatRoom> chatRooms = chatRoomService.findBySenderOrRecipient(authService.whoami(req));
         return new ResponseEntity<>(chatRoomMapper.listToDTO(chatRooms), HttpStatus.OK);
     }
 }

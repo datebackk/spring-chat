@@ -5,13 +5,14 @@ import model.model.ChatMessage;
 import model.model.MessageStatus;
 import model.repository.ChatMessageRepository;
 import org.springframework.stereotype.Service;
-import service.service.ChatMessageServiceN;
+import service.service.ChatMessageService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ChatMessageServiceImpl implements ChatMessageServiceN {
+public class ChatMessageServiceImpl implements ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
 
@@ -23,6 +24,16 @@ public class ChatMessageServiceImpl implements ChatMessageServiceN {
     @Override
     public Long countChatMessageByChatIdAndStatus(String chatId, MessageStatus messageStatus) {
         return chatMessageRepository.countChatMessageByChatIdAndStatus(chatId, messageStatus);
+    }
+
+    @Override
+    public Optional<ChatMessage> findById(Long id) {
+        return chatMessageRepository.findById(id);
+    }
+
+    @Override
+    public ChatMessage saveAndFlushChatMessage(ChatMessage chatMessage) {
+        return chatMessageRepository.saveAndFlush(chatMessage);
     }
 
     @Override

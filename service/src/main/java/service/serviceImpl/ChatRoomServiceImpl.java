@@ -5,13 +5,13 @@ import model.model.ChatRoom;
 import model.model.User;
 import model.repository.ChatRoomRepository;
 import org.springframework.stereotype.Service;
-import service.service.ChatRoomServiceN;
+import service.service.ChatRoomService;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ChatRoomServiceImpl implements ChatRoomServiceN {
+public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
 

@@ -8,4 +8,5 @@ public class ChatRoomDTO {
     private String chatId;
     private UserDTO sender;
     private UserDTO recipient;
+    private Long newMessages;
 }

@@ -1,23 +1,10 @@
 package service.service;
 
-
-import lombok.RequiredArgsConstructor;
-import lombok.var;
 import model.model.ChatRoom;
-import model.repository.ChatRoomRepository;
-import org.springframework.stereotype.Service;
+import model.model.User;
 
-import java.util.Optional;
+import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class ChatRoomService {
-
-    private final ChatRoomRepository chatRoomRepository;
-
-    public Optional<String> getChatId(
-            String senderId, String recipientId, boolean createIfNotExist) {
-
-        return Optional.of("12");
-    }
+public interface ChatRoomService {
+    List<ChatRoom> findBySenderOrRecipient(User user);
 }

@@ -4,6 +4,7 @@ import api.dto.MessageDTO;
 import model.model.ChatMessage;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface MessageMapper {
     ChatMessage toEntity(MessageDTO messageDTO);
 
     List<MessageDTO> listToDTO(List<ChatMessage> chatMessages);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void merge(@MappingTarget ChatMessage chatMessage, MessageDTO messageDTO);
 }

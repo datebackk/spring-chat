@@ -1,8 +1,10 @@
 package model.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -21,6 +23,9 @@ public class ChatMessage {
 
    @Column(name = "recipient_id")
    private Long recipientId;
+
+   @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+   private LocalDateTime date;
 
    private String message;
 
