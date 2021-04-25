@@ -9,4 +9,5 @@ public class ChatRoomDTO {
     private UserDTO sender;
     private UserDTO recipient;
     private Long newMessages;
+    private MessageDTO lastMessage;
 }

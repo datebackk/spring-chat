@@ -2,17 +2,12 @@ package model.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Entity(name = "chat_room")
+
+@Entity
+@Data
+@Table(name = "chat_room")
 public class ChatRoom {
     @Id
     private String id;
@@ -25,4 +20,8 @@ public class ChatRoom {
 
     @ManyToOne
     private User recipient;
+
+    @OneToOne
+    @JoinColumn(name = "last_message")
+    private ChatMessage lastMessage;
 }

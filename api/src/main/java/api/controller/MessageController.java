@@ -5,6 +5,7 @@ import api.dto.MessageDTO;
 import api.mapper.MessageMapper;
 import lombok.RequiredArgsConstructor;
 import model.model.ChatMessage;
+import model.model.ChatRoom;
 import model.model.MessageStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import service.service.ChatMessageService;
+import service.service.ChatRoomService;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ import java.util.List;
 public class MessageController {
 
     private final ChatMessageService chatMessageService;
+    private final ChatRoomService chatRoomService;
     private final MessageMapper messageMapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -50,7 +53,10 @@ public class MessageController {
 
     @PostMapping("/message")
     public ResponseEntity<?> sendMessage(@RequestBody MessageDTO message) {
+        ChatRoom chatRoom = chatRoomService.findByChatId(message.getChatId());
         ChatMessage chatMessage = chatMessageService.saveAndFlushChatMessage(messageMapper.toEntity(message));
+        chatRoom.setLastMessage(chatMessage);
+        chatRoomService.save(chatRoom);
         return new ResponseEntity<>(chatMessage, HttpStatus.CREATED);
     }
 

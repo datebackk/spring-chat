@@ -16,6 +16,8 @@ public interface ChatRoomRepository extends CrudRepository<ChatRoom, String> {
 
     List<ChatRoom> findBySenderOrRecipient(User user1, User user2);
 
+    ChatRoom findByChatId(String chatId);
+
 
 //    Optional<ChatRoom> findBySenderIdAndRecipientId(String senderId, String recipientId);
 }
