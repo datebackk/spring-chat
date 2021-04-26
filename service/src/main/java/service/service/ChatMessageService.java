@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ChatMessageService {
     List<ChatMessage> findByChatId(String chatId);
 
-    Long countChatMessageByChatIdAndStatus(String chatId, MessageStatus messageStatus);
+    Long countChatMessageByChatIdAndStatusAndRecipientId(String chatId, MessageStatus messageStatus, Long id);
 
     Optional<ChatMessage> findById(Long id);
 

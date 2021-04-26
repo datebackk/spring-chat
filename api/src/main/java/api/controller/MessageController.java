@@ -13,9 +13,11 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import security.service.AuthService;
 import service.service.ChatMessageService;
 import service.service.ChatRoomService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -25,6 +27,7 @@ public class MessageController {
     private final ChatMessageService chatMessageService;
     private final ChatRoomService chatRoomService;
     private final MessageMapper messageMapper;
+    private final AuthService authService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/chat/{to}")
@@ -44,8 +47,8 @@ public class MessageController {
     }
 
     @GetMapping("/new-messages/{chatId}")
-    public ResponseEntity<?> getNewMessages(@PathVariable String chatId) {
-        Long newMessages = chatMessageService.countChatMessageByChatIdAndStatus(chatId, MessageStatus.SENT);
+    public ResponseEntity<?> getNewMessages(@PathVariable String chatId, HttpServletRequest req) {
+        Long newMessages = chatMessageService.countChatMessageByChatIdAndStatusAndRecipientId(chatId, MessageStatus.SENT, authService.whoami(req).getId());
         CountedMessages countedMessages = new CountedMessages();
         countedMessages.setCountedMessages(newMessages);
         return new ResponseEntity<>(countedMessages, HttpStatus.OK);

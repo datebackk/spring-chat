@@ -22,8 +22,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public Long countChatMessageByChatIdAndStatus(String chatId, MessageStatus messageStatus) {
-        return chatMessageRepository.countChatMessageByChatIdAndStatus(chatId, messageStatus);
+    public Long countChatMessageByChatIdAndStatusAndRecipientId(String chatId, MessageStatus messageStatus, Long id) {
+        return chatMessageRepository.countChatMessageByChatIdAndStatusAndRecipientId(chatId, messageStatus, id);
     }
 
     @Override
