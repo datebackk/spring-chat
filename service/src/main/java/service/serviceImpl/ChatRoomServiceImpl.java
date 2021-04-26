@@ -25,6 +25,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomRepository.findByChatId(chatId);
     }
 
+    @Override
+    public ChatRoom findFirstBySenderAndRecipientOrRecipientAndSender(User user1, User user2) {
+        return chatRoomRepository.findFirstBySenderAndRecipientOrRecipientAndSender(user1, user2, user2, user1);
+    }
+
     public void save(ChatRoom chatRoom) {
         chatRoomRepository.save(chatRoom);
     }

@@ -9,5 +9,8 @@ public interface ChatRoomService {
     List<ChatRoom> findBySenderOrRecipient(User user);
     ChatRoom findByChatId(String chatId);
 
+    ChatRoom findFirstBySenderAndRecipientOrRecipientAndSender(User user1, User user2);
+
+
     void save(ChatRoom chatRoom);
 }

@@ -18,4 +18,9 @@ public class UserServiceImpl implements UserService {
     public List<User> findByNicknameContains(String nickname) {
         return userRepository.findByNicknameContains(nickname);
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }

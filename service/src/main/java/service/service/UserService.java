@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface UserService {
     List<User> findByNicknameContains(String nickname);
+
+    User findByEmail(String email);
 }

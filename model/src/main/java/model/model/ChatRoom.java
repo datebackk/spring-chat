@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Table(name = "chat_room")
 public class ChatRoom {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "chat_id")
     private String chatId;
