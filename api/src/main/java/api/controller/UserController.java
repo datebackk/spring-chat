@@ -3,17 +3,18 @@ package api.controller;
 import api.dto.UserDTO;
 import api.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import security.service.AuthService;
 import service.exception.StorageException;
 import service.service.UserService;
 
-import java.io.File;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -21,14 +22,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
+    private final AuthService authService;
 
     @Value("${storage.location}")
     private String storageLocation;
@@ -50,12 +50,15 @@ public class UserController {
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
-    @PostMapping("user/avatar")
-    public ResponseEntity<?> uploadUserAvatar(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/user/avatar")
+    public ResponseEntity<?> uploadUserAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest req) {
 
         this.rootLocation = Paths.get(storageLocation);
 
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        String filename = authService.whoami(req).getId().toString() + ".png";
+
+        System.out.println(filename);
+
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + filename);

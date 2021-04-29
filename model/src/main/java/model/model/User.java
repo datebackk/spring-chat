@@ -1,6 +1,8 @@
 package model.model;
 
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -16,6 +18,9 @@ public class User {
     private String nickname;
     private String email;
     private String password;
+
+    @ColumnDefault("default.png")
+    private String userImg;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
