@@ -17,7 +17,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public List<ChatRoom> findBySenderOrRecipient(User user) {
-        return chatRoomRepository.findBySenderOrRecipient(user, user);
+        return chatRoomRepository.findBySenderOrRecipientOrderByLastMessage_DateDesc(user, user);
     }
 
     @Override
