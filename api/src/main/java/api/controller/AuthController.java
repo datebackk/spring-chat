@@ -1,6 +1,5 @@
 package api.controller;
 
-
 import api.dto.JwtAuthenticationResponse;
 import api.dto.LoginUserDTO;
 import api.dto.UserDTO;
@@ -8,6 +7,7 @@ import api.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import security.service.AuthService;
 
@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
-
     private final UserMapper userMapper;
 
 
@@ -36,14 +35,8 @@ public class AuthController {
         return new ResponseEntity<>(new JwtAuthenticationResponse(token), HttpStatus.CREATED);
     }
 
-
-    @GetMapping(value = "/{email}")
-    public ResponseEntity<?> search(@PathVariable String email) {
-        return new ResponseEntity<>(userMapper.toDTO(authService.search(email)), HttpStatus.OK);
-    }
-
-
     @GetMapping(value = "/me")
+//    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> whoami(HttpServletRequest req) {
         return new ResponseEntity<>(userMapper.toDTO(authService.whoami(req)), HttpStatus.OK);
     }

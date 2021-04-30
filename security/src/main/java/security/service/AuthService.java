@@ -45,7 +45,7 @@ public class AuthService {
     public String signup(User user) {
         if (!userRepository.existsByEmail(user.getEmail())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoles(user.getRoles().stream().map(p -> p = roleService.findById(p.getId()).get()).collect(Collectors.toList()));
+            user.setRoles(user.getRoles().stream().map(p -> p = roleService.findByName(p.getName()).get()).collect(Collectors.toList()));
             userRepository.save(user);
             return jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
         } else {

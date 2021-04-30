@@ -3,11 +3,10 @@ package api.controller;
 import api.dto.UserDTO;
 import api.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import model.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import security.service.AuthService;
@@ -36,17 +35,9 @@ public class UserController {
     private Path rootLocation;
 
 
-
-//    @Autowired
-//    public FileSystemStorageService(StorageProperties properties) {
-//        this.rootLocation = Paths.get(properties.getLocation());
-//    }
-
-
-
     @GetMapping("/user/{nickname}")
     public ResponseEntity<?> getUserByNickname(@PathVariable String nickname) {
-        List<UserDTO> userDTOS = userMapper.listToDTO(userService.findByNicknameContains(nickname));
+        List<UserDTO> userDTOS = userMapper.listToDTO(userService.findByNicknameIgnoreCaseContains(nickname));
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
@@ -55,9 +46,9 @@ public class UserController {
 
         this.rootLocation = Paths.get(storageLocation);
 
-        String filename = authService.whoami(req).getId().toString() + ".png";
+        User user = authService.whoami(req);
+        String filename = user.getId().toString() + ".png";
 
-        System.out.println(filename);
 
         try {
             if (file.isEmpty()) {
@@ -76,12 +67,14 @@ public class UserController {
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, this.rootLocation.resolve(filename),
                         StandardCopyOption.REPLACE_EXISTING);
-                System.out.println(this.rootLocation.resolve(filename));
             }
         }
         catch (IOException e) {
             throw new StorageException("Failed to store file " + filename, e);
         }
+
+        user.setUserImg(filename);
+        userService.save(user);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -2,12 +2,11 @@ package api.mapper;
 
 import api.dto.UserDTO;
 import model.model.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface UserMapper {
 
     User toEntity(UserDTO userDTO);

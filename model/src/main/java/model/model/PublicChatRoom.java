@@ -1,26 +1,20 @@
 package model.model;
 
-import lombok.*;
+import lombok.Data;
 
 import javax.persistence.*;
 
 
 @Entity
 @Data
-@Table(name = "chat_room")
-public class ChatRoom {
+@Table(name = "public_chat_room")
+public class PublicChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "chat_id", unique = true, nullable = false)
+    @Column(name = "chat_id")
     private String chatId;
-
-    @ManyToOne
-    private User sender;
-
-    @ManyToOne
-    private User recipient;
 
     @OneToOne
     @JoinColumn(name = "last_message")

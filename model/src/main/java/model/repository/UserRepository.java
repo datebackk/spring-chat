@@ -15,7 +15,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     User findByEmail(String email);
 
-    List<User> findByNicknameContains(String nickname);
+    List<User> findByNicknameIgnoreCaseContains(String nickname);
 
     @Transactional
     void deleteByEmail(String email);

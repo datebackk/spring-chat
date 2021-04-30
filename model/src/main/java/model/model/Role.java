@@ -9,6 +9,6 @@ import javax.persistence.*;
 @Table(name = "role")
 public class Role {
     @Id
-    private Long id;
-    private String name;
+    @Enumerated(EnumType.ORDINAL)
+    private RoleName name;
 }

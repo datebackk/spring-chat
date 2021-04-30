@@ -15,11 +15,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false, length = 30)
     private String nickname;
+
+    @Column(unique = true, nullable = false, length = 64)
     private String email;
+
+    @Column(nullable = false)
     private String password;
 
     @ColumnDefault("default.png")
+    @Column(name = "user_img", nullable = false)
     private String userImg;
 
 
@@ -29,7 +35,7 @@ public class User {
             joinColumns = @JoinColumn(
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"))
+                    name = "role_id", referencedColumnName = "name"))
 
     private List<Role> roles;
 

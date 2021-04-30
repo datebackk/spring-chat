@@ -27,6 +27,7 @@ public class ChatMessage {
    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
    private LocalDateTime date;
 
+   @Column(nullable = false)
    private String message;
 
    @Enumerated(EnumType.ORDINAL)
