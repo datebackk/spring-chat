@@ -7,12 +7,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
 
-//    List<ChatRoom> findBySenderIdOrRecipientId(String id, String id1);
 
     List<ChatRoom> findBySenderOrRecipientOrderByLastMessage_DateDesc(User user1, User user2);
 
@@ -24,6 +22,4 @@ public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
 
     ChatRoom findByChatId(String chatId);
 
-
-//    Optional<ChatRoom> findBySenderIdAndRecipientId(String senderId, String recipientId);
 }

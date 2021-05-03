@@ -2,7 +2,9 @@ package api.controller;
 
 import api.dto.ChatRoomDTO;
 import api.mapper.ChatRoomMapper;
+import api.mapper.MessageMapper;
 import lombok.RequiredArgsConstructor;
+import model.model.ChatMessage;
 import model.model.ChatRoom;
 import model.model.MessageStatus;
 import model.model.User;
@@ -24,10 +26,13 @@ public class ChatController {
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final UserService userService;
+    private final AuthService authService;
+
     private final ChatRoomRepository chatRoomRepository;
 
     private final ChatRoomMapper chatRoomMapper;
-    private final AuthService authService;
+    private final MessageMapper messageMapper;
+
 
     @GetMapping("/chats")
     public ResponseEntity<?> getChats(@RequestParam(defaultValue = "all") String amount,
@@ -52,6 +57,12 @@ public class ChatController {
 
     @PostMapping("/chats")
     public ResponseEntity<?> createNewChat(@RequestBody ChatRoomDTO chatRoomDTO) {
+
+        if (chatRoomDTO.getLastMessage() != null) {
+            ChatMessage chatMessage = chatMessageService.saveAndFlushChatMessage(messageMapper.toEntity(chatRoomDTO.getLastMessage()));
+            chatRoomDTO.setLastMessage(messageMapper.toDTO(chatMessage));
+        }
+
         User sender = userService.findByEmail(chatRoomDTO.getSender().getEmail());
         User recipient = userService.findByEmail(chatRoomDTO.getRecipient().getEmail());
         ChatRoom chatRoom = chatRoomMapper.toEntity(chatRoomDTO);

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import model.model.Role;
 import model.model.User;
 import model.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AppUserDetails implements UserDetailsService {
+public class MyUserDetails implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -40,7 +39,9 @@ public class AppUserDetails implements UserDetailsService {
                 .disabled(false)//
                 .build();
     }
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
+
+
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
     }
 

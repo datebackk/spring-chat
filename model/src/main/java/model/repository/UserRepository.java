@@ -13,6 +13,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByNickname(String nickname);
+
     User findByEmail(String email);
 
     List<User> findByNicknameIgnoreCaseContains(String nickname);

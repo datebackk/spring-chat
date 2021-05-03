@@ -53,18 +53,6 @@ public class AuthService {
         }
     }
 
-    public void delete(String email) {
-        userRepository.deleteByEmail(email);
-    }
-
-    public User search(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
-        }
-        return user;
-    }
-
     public User whoami(HttpServletRequest req) {
         return userRepository.findByEmail(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req)));
     }
