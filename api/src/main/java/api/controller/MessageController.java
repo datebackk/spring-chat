@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import model.model.ChatMessage;
 import model.model.ChatRoom;
 import model.model.MessageStatus;
+import model.repository.ChatMessageRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -26,6 +27,7 @@ public class MessageController {
 
     private final ChatMessageService chatMessageService;
     private final ChatRoomService chatRoomService;
+    private final ChatMessageRepository chatMessageRepository;
     private final MessageMapper messageMapper;
     private final AuthService authService;
     private final SimpMessagingTemplate simpMessagingTemplate;
@@ -33,6 +35,11 @@ public class MessageController {
     @MessageMapping("/chat/{to}")
     public void sendWsMessage(@DestinationVariable String to, MessageDTO messageDTO) {
         simpMessagingTemplate.convertAndSend("/topic/messages/" + to, messageDTO);
+    }
+
+    @MessageMapping("/public")
+    public void sendWsMessageToPublic(MessageDTO messageDTO) {
+        simpMessagingTemplate.convertAndSend("/topic/public", messageDTO);
     }
 
     @MessageMapping("/message-status/{to}")
@@ -69,5 +76,25 @@ public class MessageController {
         messageMapper.merge(chatMessage, messageDTO);
         MessageDTO messageDTO1 = messageMapper.toDTO(chatMessageService.saveAndFlushChatMessage(chatMessage));
         return new ResponseEntity<>(messageDTO1, HttpStatus.OK);
+    }
+
+    @GetMapping("/messages")
+    public ResponseEntity<?> getAllMessages() {
+        return new ResponseEntity<>(chatMessageRepository.findAll(), HttpStatus.OK);
+    }
+
+    @PutMapping("/messages/{id}")
+    public ResponseEntity<?> updateMessages(@PathVariable Long id, @RequestBody MessageDTO messageDTO) {
+        ChatMessage chatMessage = chatMessageRepository.findById(id).get();
+        messageMapper.merge(chatMessage, messageDTO);
+        ChatMessage updatedMessage = chatMessageRepository.saveAndFlush(chatMessage);
+        return new ResponseEntity<>(updatedMessage, HttpStatus.OK);
+    }
+
+    @DeleteMapping("messages/{id}")
+    public ResponseEntity<?> deleteMessage(@PathVariable Long id) {
+        ChatMessage chatMessage = chatMessageRepository.findById(id).get();
+        chatMessageRepository.delete(chatMessage);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

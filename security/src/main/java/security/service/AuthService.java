@@ -38,18 +38,18 @@ public class AuthService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             return jwtTokenProvider.createToken(email, userRepository.findByEmail(email).getRoles());
         } catch (AuthenticationException e) {
-            throw new CustomException("Invalid email/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new CustomException("Пользователя с таким Email не существует", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     public String signup(User user) {
-        if (!userRepository.existsByEmail(user.getEmail())) {
+        if (!userRepository.existsByEmail(user.getEmail()) && !userRepository.existsByNickname(user.getNickname())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(user.getRoles().stream().map(p -> p = roleService.findByName(p.getName()).get()).collect(Collectors.toList()));
             userRepository.save(user);
             return jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
         } else {
-            throw new CustomException("Email is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new CustomException("Email или Nickname уже существует", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
