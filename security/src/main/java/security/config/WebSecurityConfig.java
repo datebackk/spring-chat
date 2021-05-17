@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 
         // Disable CSRF (cross site request forgery)
         http.csrf().disable();
+//        http.cors();
 
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -43,7 +44,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/users/signup").permitAll()//
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 // Disallow everything else..
-                .antMatchers("**").permitAll()
+                .antMatchers("/topic/**").permitAll()
+                .antMatchers("/app/**").permitAll()
+                .antMatchers("/chat/**").permitAll()
+                .antMatchers("/message-status/**").permitAll()
+//                .antMatchers("**").permitAll()
                 .anyRequest().authenticated();
 
         // If a user try to access a resource without having enough permissions
@@ -59,9 +64,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("http://localhost:3000", "http://localhost:8090")
                 .allowCredentials(true)
-                .allowedMethods("*");
+                .allowedMethods("POST", "PUT", "GET", "OPTIONS", "DELETE", "HEAD", "PATCH");
     }
 
     @Bean

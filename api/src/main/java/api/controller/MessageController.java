@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import security.service.AuthService;
 import service.service.ChatMessageService;
@@ -79,11 +80,13 @@ public class MessageController {
     }
 
     @GetMapping("/messages")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getAllMessages() {
         return new ResponseEntity<>(chatMessageRepository.findAll(), HttpStatus.OK);
     }
 
     @PutMapping("/messages/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> updateMessages(@PathVariable Long id, @RequestBody MessageDTO messageDTO) {
         ChatMessage chatMessage = chatMessageRepository.findById(id).get();
         messageMapper.merge(chatMessage, messageDTO);
@@ -92,6 +95,7 @@ public class MessageController {
     }
 
     @DeleteMapping("messages/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteMessage(@PathVariable Long id) {
         ChatMessage chatMessage = chatMessageRepository.findById(id).get();
         chatMessageRepository.delete(chatMessage);
