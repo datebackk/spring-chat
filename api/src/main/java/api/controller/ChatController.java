@@ -41,6 +41,8 @@ public class ChatController {
         if (amount.equals("all")) {
             List<ChatRoomDTO> chatRoomDTOS = chatRoomMapper.listToDTO(chatRoomService.findBySenderOrRecipient(authService.whoami(req)));
             chatRoomDTOS.stream().forEach(p -> p.setNewMessages(chatMessageService.countChatMessageByChatIdAndStatusAndRecipientId(p.getChatId(), MessageStatus.SENT, authService.whoami(req).getId())));
+            ChatRoomDTO publicChatRoomDTO = chatRoomMapper.toDTO(chatRoomRepository.findByChatId("public"));
+            chatRoomDTOS.add(publicChatRoomDTO);
             return new ResponseEntity<>(chatRoomDTOS, HttpStatus.OK);
         } else {
             User user = userService.findByEmail(userEmail);
@@ -68,7 +70,7 @@ public class ChatController {
         ChatRoom chatRoom = chatRoomMapper.toEntity(chatRoomDTO);
         chatRoom.setSender(sender);
         chatRoom.setRecipient(recipient);
-        chatRoomService.save(chatRoom);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        ChatRoomDTO createdChatRoom = chatRoomMapper.toDTO(chatRoomRepository.saveAndFlush(chatRoom));
+        return new ResponseEntity<>(createdChatRoom, HttpStatus.CREATED);
     }
 }

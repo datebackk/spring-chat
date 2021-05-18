@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
 
+    boolean existsByChatId(String chatId);
 
     List<ChatRoom> findBySenderOrRecipientOrderByLastMessage_DateDesc(User user1, User user2);
 
@@ -19,7 +20,7 @@ public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
     ChatRoom findFirstBySenderAndRecipient(User user1, User user2);
     ChatRoom findFirstByRecipientAndSender(User user1, User user2);
 
-
     ChatRoom findByChatId(String chatId);
 
+    ChatRoom saveAndFlush(ChatRoom chatRoom);
 }
