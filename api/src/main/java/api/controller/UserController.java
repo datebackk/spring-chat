@@ -45,7 +45,6 @@ public class UserController {
     public ResponseEntity<?> uploadUserAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest req) {
 
         this.rootLocation = Paths.get(storageLocation);
-
         User user = authService.whoami(req);
         String filename = user.getId().toString() + ".png";
 

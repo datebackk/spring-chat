@@ -38,7 +38,7 @@ public class AuthService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             return jwtTokenProvider.createToken(email, userRepository.findByEmail(email).getRoles());
         } catch (AuthenticationException e) {
-            throw new CustomException("Пользователя с таким Email не существует", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new CustomException("Не правильный логин или пароль", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
